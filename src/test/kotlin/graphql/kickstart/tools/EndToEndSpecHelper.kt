@@ -23,6 +23,7 @@ fun createSchema() = SchemaParser.newParser()
     .dictionary("ThirdItem", ThirdItem::class)
     .dictionary("ComplexMapItem", ComplexMapItem::class)
     .dictionary("NestedComplexMapItem", NestedComplexMapItem::class)
+    // .options(SchemaParserOptions.newOptions().allowUnimplementedResolvers(true).build())
     .build()
     .makeExecutableSchema()
 
@@ -83,10 +84,21 @@ type Query {
     arrayItems: [Item!]!
     
     throwsIllegalArgumentException: String
+
+    defaultMapType: DefaultMapType
 }
 
 type ExtendedType {
     first: String!
+}
+
+type DefaultMapType {
+    foo: String!
+    complexDefaultMap: ComplexDefaultMap
+}
+
+type ComplexDefaultMap {
+    baz: String!
 }
 
 extend type ExtendedType {
@@ -303,6 +315,8 @@ class Query : GraphQLQueryResolver, ListListResolver<String>() {
     fun throwsIllegalArgumentException(): String {
         throw IllegalArgumentException("Expected")
     }
+
+    fun defaultMapType() = mapOf("foo" to "bar", "complexDefaultMap" to mapOf("baz" to "foo"))
 }
 
 class UnusedRootResolver : GraphQLQueryResolver

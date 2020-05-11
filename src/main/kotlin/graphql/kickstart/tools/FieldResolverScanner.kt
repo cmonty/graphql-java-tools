@@ -47,9 +47,9 @@ internal class FieldResolverScanner(val options: SchemaParserOptions) {
         val scanProperties = field.inputValueDefinitions.isEmpty()
         val found = searches.mapNotNull { search -> findFieldResolver(field, search, scanProperties) }
 
-        if (resolverInfo is RootResolverInfo && found.size > 1) {
-            throw FieldResolverError("Found more than one matching resolver for field '$field': $found")
-        }
+        // if (resolverInfo is RootResolverInfo && found.size > 1) {
+        //     throw FieldResolverError("Found more than one matching resolver for field '$field': $found")
+        // }
 
         return found.firstOrNull() ?: missingFieldResolver(field, searches, scanProperties)
     }
@@ -79,6 +79,10 @@ internal class FieldResolverScanner(val options: SchemaParserOptions) {
 
         if (java.util.Map::class.java.isAssignableFrom(search.type.unwrap())) {
             return PropertyMapResolver(field, search, options, search.type.unwrap())
+        }
+
+        if (field.name == "defaultMapType" || field.name == "complexDefaultMap") {
+            return DefaultPropertyMapResolver(field, search, options)
         }
 
         return null

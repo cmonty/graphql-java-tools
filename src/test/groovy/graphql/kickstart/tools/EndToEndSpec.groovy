@@ -52,12 +52,20 @@ class EndToEndSpec extends Specification {
                         id
                         type
                     }
+
+                    defaultMapType {
+                        foo
+                        complexDefaultMap {
+                            baz
+                        }
+                    }
                 }
                 '''
         }
 
         then:
-        noExceptionThrown()
+        data.defaultMapType == [foo: "bar"]
+        // noExceptionThrown()
     }
 
     def "generated schema should respond to simple mutations"() {

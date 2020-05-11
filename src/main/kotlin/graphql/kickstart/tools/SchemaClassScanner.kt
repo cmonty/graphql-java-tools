@@ -219,9 +219,11 @@ internal class SchemaClassScanner(
     private fun getResolverInfoFromTypeDictionary(typeName: String): ResolverInfo? {
         val dictionaryType = initialDictionary[typeName]?.get()
         return if (dictionaryType != null) {
+            log.warn("**${typeName}** ${DataClassResolverInfo(dictionaryType)}")
             resolverInfosByDataClass[dictionaryType] ?: DataClassResolverInfo(dictionaryType)
         } else {
-            null
+            DataClassResolverInfo(Map::class.java)
+            // null
         }
     }
 
